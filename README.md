@@ -51,7 +51,7 @@ JWT_EXPIRES_IN=8h                             # dejar así
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=tu_correo@gmail.com                # tu cuenta Gmail
-EMAIL_PASS=abcd efgh ijkl mnop               # los 16 caracteres sin espacios
+EMAIL_PASS=abcd ewww ijkl mnop               # los 16 caracteres sin espacios
 ```
 
 > **Importante:** el archivo `.env` **nunca se sube al repositorio** (está en `.gitignore`).  
