@@ -1,0 +1,24 @@
+# Credenciales — NUNCA subir al repositorio
+.env
+
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Build del frontend
+techstore-frontend/dist/
+
+# Volumen de base de datos
+pgdata/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

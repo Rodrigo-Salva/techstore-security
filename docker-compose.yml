@@ -1,0 +1,60 @@
+services:
+
+  # ── Base de datos ─────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: techstore-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB}
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Backend API ───────────────────────────────────────────────
+  api:
+    build:
+      context: ./techstore-api
+      dockerfile: Dockerfile
+    container_name: techstore-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "node src/utils/seed.js && node src/app.js"
+    environment:
+      PORT:           3000
+      DB_HOST:        db
+      DB_PORT:        5432
+      DB_NAME:        ${POSTGRES_DB}
+      DB_USER:        ${POSTGRES_USER}
+      DB_PASSWORD:    ${POSTGRES_PASSWORD}
+      JWT_SECRET:     ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      EMAIL_HOST:     ${EMAIL_HOST}
+      EMAIL_PORT:     ${EMAIL_PORT}
+      EMAIL_USER:     ${EMAIL_USER}
+      EMAIL_PASS:     ${EMAIL_PASS}
+    ports:
+      - "3000:3000"
+
+  # ── Frontend ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./techstore-frontend
+      dockerfile: Dockerfile
+    container_name: techstore-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8083:80"
+
+volumes:
+  pgdata:
